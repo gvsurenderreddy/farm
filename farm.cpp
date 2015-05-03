@@ -22,7 +22,7 @@ void Farm::create()
     mainQmlView = new QQmlComponent(engine);
     connect(engine, SIGNAL(quit()), QGuiApplication::instance(), SLOT(quit()));
 
-    mainQmlView->loadUrl(QUrl("qrc:/window.qml"));
+    mainQmlView->loadUrl(QUrl("qrc:///qml/window.qml"));
     if (!mainQmlView->isReady()) {
         std::cerr << mainQmlView->errorString().toStdString() << std::endl;
         QGuiApplication::exit(-1);
