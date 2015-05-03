@@ -1,20 +1,40 @@
 #include "farm.h"
 
-#include <QLabel>
-#include <QMenu>
-#include <QMenuBar>
-#include <QAction>
+#include <QtCore/QDebug>
+#include <iostream>
 
-farm::farm()
+#include <QtQml/QQmlEngine>
+#include <QGuiApplication>
+
+
+Farm::Farm()
+  : QObject()
 {
-    QLabel* label = new QLabel( this );
-    label->setText( "Hello World!" );
-    setCentralWidget( label );
-    QAction* action = new QAction(this);
-    action->setText( "Quit" );
-    connect(action, SIGNAL(triggered()), SLOT(close()) );
-    menuBar()->addMenu( "File" )->addAction( action );
 }
 
-farm::~farm()
-{}
+Farm::~Farm()
+{
+}
+
+void Farm::create()
+{
+    engine = new QQmlEngine();
+    mainQmlView = new QQmlComponent(engine);
+    connect(engine, SIGNAL(quit()), QGuiApplication::instance(), SLOT(quit()));
+
+    mainQmlView->loadUrl(QUrl("qrc:/window.qml"));
+    if (!mainQmlView->isReady()) {
+        std::cerr << mainQmlView->errorString().toStdString() << std::endl;
+        QGuiApplication::exit(-1);
+        exit(-1);
+        return;
+    }
+
+    QObject *topLevel = mainQmlView->create();
+    window = qobject_cast<QQuickWindow*>(topLevel);
+
+//     QSurfaceFormat surfaceFormat = window->requestedFormat();
+//     window->setFormat(surfaceFormat);
+    window->show();
+}
+

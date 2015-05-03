@@ -1,15 +1,24 @@
 #ifndef farm_H
 #define farm_H
 
-#include <QMainWindow>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlComponent>
+#include <QQuickWindow>
 
-class farm : public QMainWindow
+class Farm : public QObject
 {
     Q_OBJECT
 
 public:
-    farm();
-    virtual ~farm();
+    Farm();
+    virtual ~Farm();
+
+    void create();
+
+protected:
+    QQmlEngine* engine;
+    QQmlComponent* mainQmlView;
+    QQuickWindow* window;
 };
 
 #endif // farm_H
