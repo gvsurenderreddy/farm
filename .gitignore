@@ -1,0 +1,10 @@
+# Proejct files
+/.kdev4
+/farm.kdev4
+/CMakeLists.txt.user
+
+# Build folders
+/build
+
+# Cache files
+*.swp
