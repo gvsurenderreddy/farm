@@ -20,7 +20,7 @@ add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS} ${Qt5Qml_DEFINITION
 # Add compiler flags for bulding executables (-fPIE)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Gui_EXECUTABLE_COMPILE_FLAGS} ${Qt5Qml_EXECUTABLE_COMPILE_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS}")
 
-set(farm_SRCS farm.cpp main.cpp)
+set(farm_SRCS src/farm.cpp src/main.cpp)
 set(farm_QRC farm.qrc)
 
 QT5_ADD_RESOURCES(farm_RCC_SRCS ${farm_QRC})
