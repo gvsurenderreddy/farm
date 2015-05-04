@@ -5,10 +5,12 @@
 
 #include <QtQml/QQmlEngine>
 #include <QGuiApplication>
+#include <QQmlContext>
+#include <QQuickView>
 
 
-Farm::Farm()
-  : QObject()
+Farm::Farm(int argc, char** argv)
+  : QApplication(argc, argv)
 {
 }
 
@@ -16,18 +18,23 @@ Farm::~Farm()
 {
 }
 
-void Farm::create()
+int Farm::exec()
 {
-    engine = new QQmlEngine();
-    mainQmlView = new QQmlComponent(engine);
-    connect(engine, SIGNAL(quit()), QGuiApplication::instance(), SLOT(quit()));
+    setup();
+    return QApplication::exec();
+}
+
+
+void Farm::setup()
+{
+    engine = new QQmlEngine(this);
+    QQmlComponent* mainQmlView = new QQmlComponent(engine, this);
+    connect(engine, SIGNAL(quit()), this, SLOT(quit()));
 
     mainQmlView->loadUrl(QUrl("qrc:///qml/window.qml"));
     if (!mainQmlView->isReady()) {
         std::cerr << mainQmlView->errorString().toStdString() << std::endl;
-        QGuiApplication::exit(-1);
-        exit(-1);
-        return;
+        std::exit(-1);
     }
 
     QObject *topLevel = mainQmlView->create();
@@ -35,6 +42,16 @@ void Farm::create()
 
 //     QSurfaceFormat surfaceFormat = window->requestedFormat();
 //     window->setFormat(surfaceFormat);
-    window->show();
+//     window->show();
+
+
+    QStringList dataList;
+    dataList.append("Item 1");
+    dataList.append("Item 2");
+    dataList.append("Item 3");
+    dataList.append("Item 4");
+
+    QQmlContext* context = engine->rootContext();
+    context->setContextProperty("myModel", QVariant::fromValue(dataList));
 }
 

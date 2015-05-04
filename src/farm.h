@@ -4,20 +4,22 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
 #include <QQuickWindow>
+#include <QApplication>
 
-class Farm : public QObject
+class Farm : public QApplication
 {
     Q_OBJECT
 
 public:
-    Farm();
+    Farm(int argc, char** argv);
     virtual ~Farm();
 
-    void create();
+    int exec();
 
 protected:
+    void setup();
+
     QQmlEngine* engine;
-    QQmlComponent* mainQmlView;
     QQuickWindow* window;
 };
 
