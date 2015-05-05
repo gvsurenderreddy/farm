@@ -1,5 +1,6 @@
-# Proejct files
+# Project files
 /.kdev4
+/nbproject
 /farm.kdev4
 /CMakeLists.txt.user
 
