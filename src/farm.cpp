@@ -10,7 +10,9 @@
 
 
 Farm::Farm(int argc, char** argv)
-  : QApplication(argc, argv)
+  : QApplication(argc, argv),
+    engine(nullptr),
+    window(nullptr)
 {
 }
 
