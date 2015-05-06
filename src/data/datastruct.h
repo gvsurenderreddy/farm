@@ -11,7 +11,8 @@
 enum status_t {
     STATUS_BADDUMP,
     STATUS_NODUMP,
-    STATUS_GOOD
+    STATUS_GOOD,
+    STATUS_UNKNOWN
 };
 
 enum item_t {

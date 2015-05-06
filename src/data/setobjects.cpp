@@ -7,19 +7,18 @@
 
 #include "setobjects.h"
 
-SItem::SItem(QString name) {
-    this->name = name;
-}
-
-SItem::SItem(const SItem& orig) {
+SItem::SItem(QString* name) {
+    this->setName(name);
+    this->setCrc(NULL);
+    this->setMerge(NULL);
+    this->setSha1(NULL);
+    this->setStatus(status_t.STATUS_UNKNOWN);
 }
 
 SItem::~SItem() {
-}
-
-Sample::Sample(QString name) : SItem(name) {
-}
-
-Rom::Rom(QString name) : SItem(name) {
+    delete this->name;
+    delete this->crc;
+    delete this->merge;
+    delete this->sha1;
 }
 
