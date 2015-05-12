@@ -2,7 +2,7 @@
  * File:   setobjects.cpp
  * Author: Roberto Benfatto
  * 
- * Created on 5 maggio 2015, 15.33
+ * Created on 5 maggio 2015, 15.32
  */
 
 #include "setobjects.h"

@@ -24,7 +24,7 @@ DatabaseHelper::DatabaseHelper(const QString dbpath, unsigned int version, const
         else if (ver > version) onDowngrade(db, ver, version);
         setVersion(version);
     } else {
-        throw "Error: cannot open database";
+        throw "Error: cannot open database.";
     }
 }
 

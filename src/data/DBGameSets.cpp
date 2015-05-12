@@ -59,7 +59,7 @@ void DBGameSets::onUpdate(QSqlDatabase& db, int oldver, int newver) {
 }
 
 bool DBGameSets::addRom(QString gamename, Rom& rom) {
-    /**
+    /*
      * params=(romname, setname, romhash, romcrc, size, 1 if is_baddump else 0)
      */
     int baddump = rom.getStatus() == status_t.STATUS_BADDUMP ? 1 : 0;

@@ -14,7 +14,6 @@
 
 class ItemCollection {
     public:
-        //ItemCollection();
         ItemCollection(QString name, QString parent=nullptr);
         void setName(QString name) { this->name = name; };
         QString getName() const { return this->name; };

@@ -10,7 +10,6 @@
 
 #include "DatabaseHelper.h"
 
-
 class DBGameSets : public DatabaseHelper {
     static const QString dbname = "setdatabase.db";
 public:

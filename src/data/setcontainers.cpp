@@ -6,7 +6,6 @@
  */
 
 #include <qt/QtCore/qhash.h>
-
 #include "setcontainers.h"
 
 ItemCollection::ItemCollection(QString* name, QString* parent) {

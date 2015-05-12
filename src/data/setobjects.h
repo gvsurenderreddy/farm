@@ -9,6 +9,7 @@
 #define	SETOBJECTS_H
 #include <QtCore/QString>
 #include "datastruct.h"
+
 class SItem {
 public:
     SItem(QString* name);

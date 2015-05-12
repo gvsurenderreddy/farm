@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <mutex>
 #include <list>
+
 class DatabaseHelper {
 protected:
     bool initializing;
