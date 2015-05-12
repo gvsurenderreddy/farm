@@ -1,6 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.3
-//import QtQuick.Window 2.2
+import QtQuick.Window 2.2
 //import QtQuick.Dialogs 1.2
 
 ApplicationWindow {
@@ -17,9 +17,26 @@ ApplicationWindow {
                 onTriggered: messageDialog.show(qsTr("Open action triggered"));
             }
             MenuItem {
+                text: qsTr("&Select profile")
+                onTriggered: selectProfileScreen.show()
+            }
+            MenuItem {
                 text: qsTr("E&xit")
                 onTriggered: Qt.quit();
             }
+        }
+    }
+
+    Window {
+        id: selectProfileScreen
+        title: innerSelectProfile.title
+        width: 480
+        height: 640
+        visible: true
+
+        SelectProfile {
+            id: innerSelectProfile
+
         }
     }
 

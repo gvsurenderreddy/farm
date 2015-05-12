@@ -2,6 +2,6 @@
     <!-- QML files -->
     <qresource prefix="/">
         <file>qml/window.qml</file>
-        <file>qml/MainForm.ui.qml</file>
+        <file>qml/SelectProfile.ui.qml</file>
     </qresource>
 </RCC>
