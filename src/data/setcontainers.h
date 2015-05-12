@@ -39,14 +39,14 @@ class ItemCollection {
 
 class Bios : public Game {
     public:
-        Bios(QString* name, QString* parent=NULL) : ItemCollection(name, parent) {};
+        Bios(QString name, QString parent=nullptr) : ItemCollection(name, parent) {};
         set_t getType() { return set_t.TYPE_BIOS; };
         virtual ~Bios();
 };
 
 class Game : public ItemCollection {
     public:
-        Game(QString* name, QString* parent=NULL) : ItemCollection(name, parent) {};
+        Game(QString name, QString parent=nullptr) : ItemCollection(name, parent) {};
         QString getDescription() const {
             return description;
         }
@@ -76,10 +76,9 @@ class Game : public ItemCollection {
 
 class Mechanical : public ItemCollection {
     public:
-        Mechanical(QString* name, QString* parent=NULL) : ItemCollection(name, parent) {};
+        Mechanical(QString name, QString parent=nullptr) : ItemCollection(name, parent) {};
         set_t getType() { return set_t.TYPE_MECHANICAL; };
         virtual ~Mechanical();
 };
 
 #endif	/* SETCONTAINERS_H */
-
