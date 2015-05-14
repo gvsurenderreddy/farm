@@ -30,6 +30,7 @@ ApplicationWindow {
     Window {
         id: selectProfileScreen
         title: innerSelectProfile.title
+        modality: Qt.ApplicationModal
         width: 480
         height: 640
         visible: true
