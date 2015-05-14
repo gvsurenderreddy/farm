@@ -7,18 +7,18 @@
 
 #include "setobjects.h"
 
-SItem::SItem(QString* name) {
+SItem::SItem() {
+    this->setName(nullptr);
+    this->setCrc(nullptr);
+    this->setMerge(nullptr);
+    this->setSha1(nullptr);
+    this->setStatus(status_t::STATUS_UNKNOWN);
+}
+
+SItem::SItem(QString name) : SItem() {
     this->setName(name);
-    this->setCrc(NULL);
-    this->setMerge(NULL);
-    this->setSha1(NULL);
-    this->setStatus(status_t.STATUS_UNKNOWN);
 }
 
 SItem::~SItem() {
-    delete this->name;
-    delete this->crc;
-    delete this->merge;
-    delete this->sha1;
 }
 

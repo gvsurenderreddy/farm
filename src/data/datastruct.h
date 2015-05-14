@@ -30,4 +30,3 @@ enum set_t {
 };
 
 #endif	/* DATASTRUCT_H */
-

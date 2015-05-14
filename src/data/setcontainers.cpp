@@ -9,16 +9,14 @@
 
 #include "setcontainers.h"
 
-ItemCollection::ItemCollection(QString* name, QString* parent) {
+ItemCollection::ItemCollection(QString name, QString parent) {
     this->setName(name);
     this->setParent(parent);
-    this->setStatus(status_t.STATUS_UNKNOWN);
+    this->setStatus(status_t::STATUS_UNKNOWN);
     this->itemlist = QHash<QString, SItem>();
 }
 
 ItemCollection::~ItemCollection() {
-    delete this->name;
-    delete this->parent;
 }
 
 /**

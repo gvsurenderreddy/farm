@@ -6,21 +6,21 @@
  */
 
 #include "DatabaseHelper.h"
-#include <QtSql/QSqlError>
 
-DatabaseHelper::DatabaseHelper(const QString dbpath, unsigned int version, const QString uniquename) {
+DatabaseHelper::DatabaseHelper(QString dbpath, unsigned int version,QString uniquename) {
     if (version < 1) throw "Error: database version must be > 0.";
     this->version = version;
     this->initializing = false;
     this->name = dbpath;
-    this->db = QSqlDatabase()::addDatabase("QSQLITE", uniquename);
+    QSqlDatabase::addDatabase("QSQLITE", uniquename);
+    this->db = QSqlDatabase::database(uniquename, false);
     this->db.setDatabaseName(dbpath);
     if (this->db.open()) {
         onOpen(db);
         onConfig(db);
         int ver = getVersion();
-        if (ver == 0) onCreate(db);
-        else if (ver < version) onUpdate(db, ver, version);
+        if (ver == 0) this->onCreate(db);
+        else if (ver < version) this->onUpdate(db, ver, version);
         else if (ver > version) onDowngrade(db, ver, version);
         setVersion(version);
     } else {
@@ -28,7 +28,7 @@ DatabaseHelper::DatabaseHelper(const QString dbpath, unsigned int version, const
     }
 }
 
-QSqlQuery DatabaseHelper::query(const QString str_query, std::list<auto> params) {
+QSqlQuery DatabaseHelper::query(const QString str_query, std::list<QVariant> params) {
     if (db.isOpen()) {
         db.transaction();
         QSqlQuery qry = QSqlQuery(db);
