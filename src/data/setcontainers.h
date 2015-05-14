@@ -8,7 +8,7 @@
 #ifndef SETCONTAINERS_H
 #define	SETCONTAINERS_H
 #include <QtCore/QString>
-#include <QtCore/QList>
+#include <QtCore/QHash>
 #include "setobjects.h"
 #include "datastruct.h"
 
@@ -23,8 +23,8 @@ class ItemCollection {
         status_t getStatus() const { return this->set_status; };
         virtual set_t getType() const = 0;
         virtual ~ItemCollection();
-        QHash::const_iterator getItemIteratorBegin() { return itemlist.begin(); };
-        QHash::const_iterator getItemIteratorEnd() { return itemlist.end(); };
+        QHash<QString,SItem>::iterator getItemIteratorBegin() { return itemlist.begin(); };
+        QHash<QString,SItem>::iterator getItemIteratorEnd() { return itemlist.end(); };
         bool addItem(SItem item);
         bool delItem(SItem item);
         bool delItem(QString item);
@@ -32,15 +32,8 @@ class ItemCollection {
     private:
         QString name;
         QString parent;
-        QHash<QString, auto> itemlist;
+        QHash<QString, SItem> itemlist;
         status_t set_status;
-};
-
-class Bios : public Game {
-    public:
-        Bios(QString name, QString parent=nullptr) : ItemCollection(name, parent) {};
-        set_t getType() { return set_t.TYPE_BIOS; };
-        virtual ~Bios();
 };
 
 class Game : public ItemCollection {
@@ -64,7 +57,7 @@ class Game : public ItemCollection {
         void setYear(int year) {
             this->year = year;
         }
-        virtual set_t getType() { return set_t.TYPE_GAME; };
+        virtual set_t getType() { return set_t::TYPE_GAME; };
         virtual ~Game();
     private:
         int year;
@@ -73,10 +66,17 @@ class Game : public ItemCollection {
     
 };
 
+class Bios : public Game {
+    public:
+        Bios(QString name, QString parent=nullptr) : Game(name, parent) {};
+        set_t getType() { return set_t::TYPE_BIOS; };
+        virtual ~Bios();
+};
+
 class Mechanical : public ItemCollection {
     public:
         Mechanical(QString name, QString parent=nullptr) : ItemCollection(name, parent) {};
-        set_t getType() { return set_t.TYPE_MECHANICAL; };
+        set_t getType() { return set_t::TYPE_MECHANICAL; };
         virtual ~Mechanical();
 };
 

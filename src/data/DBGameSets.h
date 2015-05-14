@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   DBGameSets.h
  * Author: Roberto Benfatto
  *
@@ -9,9 +9,11 @@
 #define	DBGAMESETS_H
 
 #include "DatabaseHelper.h"
+#include "setcontainers.h"
+#include <QtCore/QString>
 
 class DBGameSets : public DatabaseHelper {
-    static const QString dbname = "setdatabase.db";
+    QString dbname = "setdatabase.db";
 public:
     DBGameSets(const QString dbpath, unsigned int version);
     bool addRom(QString gamename, Rom& rom);
@@ -19,7 +21,7 @@ public:
     virtual void onConfig(QSqlDatabase& db);
     virtual void onCreate(QSqlDatabase& db);
     virtual void onUpdate(QSqlDatabase& db, int oldver, int newver);
-    operator<<();
+//    operator<<(Game& game);
     virtual ~DBGameSets();
 private:
     DBGameSets(const DBGameSets& orig) = delete;

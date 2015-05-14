@@ -23,7 +23,7 @@ void DBGameSets::onConfig(QSqlDatabase& db) {
 
 void DBGameSets::onCreate(QSqlDatabase& db) {
     initializing = true;
-    this->query(db, "\
+    this->query("\
         create table ROMSET (\
         setname varchar(255) NOT NULL PRIMARY KEY,\
         year varchar(255),\
@@ -31,7 +31,7 @@ void DBGameSets::onCreate(QSqlDatabase& db) {
         description varchar(255),\
         is_bios int NOT NULL)\
         ");
-    this->query(db, "\
+    this->query("\
         create table ROM (\
         romname varchar(255) NOT NULL,\
         setname varchar(255) NOT NULL REFERENCES ROMSET(setname),\
@@ -41,8 +41,8 @@ void DBGameSets::onCreate(QSqlDatabase& db) {
         is_baddump int not null,\
         primary key (romname, setname)\
         )\
-        ")
-    this->query(db, "\
+        ");
+    this->query("\
         create table share (\
         parent varchar(255) not null references ROMSET(setname),\
         child varchar(255) not null references ROMSET(setname),\
@@ -62,7 +62,7 @@ bool DBGameSets::addRom(QString gamename, Rom& rom) {
     /*
      * params=(romname, setname, romhash, romcrc, size, 1 if is_baddump else 0)
      */
-    int baddump = rom.getStatus() == status_t.STATUS_BADDUMP ? 1 : 0;
+    int baddump = rom.getStatus() == status_t::STATUS_BADDUMP ? 1 : 0;
     QSqlQuery qry = this->query("\
                                 insert into ROM values (?,?,?,?,?,?)\
                                 ",
@@ -79,9 +79,9 @@ bool DBGameSets::addSet(Game& game) {
           { game.getName(), game.getYear(), game.getManufacturer(), game.getDescription(), game.getType() == TYPE_BIOS ? 1 : 0 }
     );
     if (qry.lastError().type() != QSqlError::NoError) return false;
-    QHash::const_iterator itr = game.getItemIteratorBegin();
+    auto itr = game.getItemIteratorBegin();
     while (itr != game.getItemIteratorEnd()) {
-        if (this->addRom(game.getName(), *itr)) ++itr;
+        if (this->addRom(game.getName(), (Rom&)*itr)) ++itr;
         else return false;
     }
     return true;
