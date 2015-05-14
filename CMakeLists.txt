@@ -38,16 +38,18 @@ add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Sql_DEFINITIONS} ${Qt5Gui_DEFINITION
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Gui_EXECUTABLE_COMPILE_FLAGS} ${Qt5Qml_EXECUTABLE_COMPILE_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
 set(farm_SRCS src/farm.cpp src/main.cpp )
+set(farm_QT_HEADERS src/farm.h )
 set(farm_QRC farm.qrc)
 add_subdirectory(src/data)
 
 QT5_ADD_RESOURCES(farm_RCC_SRCS ${farm_QRC})
 
-foreach(farm_SRC ${farm_SRCS})
-    GET_FILENAME_COMPONENT(farm_MOC ${farm_SRC} NAME_WE)
-    set(farm_MOC "${farm_MOC}.moc")
+foreach(farm_QT_HEADER ${farm_QT_HEADERS})
+    GET_FILENAME_COMPONENT(farm_MOC ${farm_QT_HEADER} NAME_WE)
+    GET_FILENAME_COMPONENT(farm_DIR ${farm_QT_HEADER} DIRECTORY)
+    set(farm_MOC "${farm_DIR}/${farm_MOC}.moc")
     #message(${farm_SRC} " - " ${farm_MOC} " ;")
-    qt5_generate_moc(${farm_SRC} ${farm_MOC})
+    qt5_generate_moc(${farm_QT_HEADER} ${farm_MOC})
     set(farm_MOCS ${farm_MOCS} ${farm_MOC})
 endforeach()
 
