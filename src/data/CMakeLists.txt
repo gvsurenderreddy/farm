@@ -1,26 +1,19 @@
-cmake_minimum_required(VERSION 2.8.11)
-project(farm)
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR CMAKE_COMPILER_IS_GNUCXX)
-    include(CheckCXXCompilerFlag)
-    check_cxx_compiler_flag(--std=c++11 SUPPORTS_STD_CXX11)
-    check_cxx_compiler_flag(--std=c++0x SUPPORTS_STD_CXX01)
-    if(SUPPORTS_STD_CXX11)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c++11")
-    elseif(SUPPORTS_STD_CXX01)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++0x")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --std=c++0x")
-    else()
-        message(ERROR "Compiler does not support --std=c++11 or --std=c++0x.")
-    endif()
-endif()
+set (CURRENT_DIR "src/data")
 
-set(farm_SRCS
-    ${farm_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/DBGameSets.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/DatabaseHelper.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/setcontainers.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/setobjects.cpp
+set (farm_QT_HEADERS ${farm_QT_HEADERS}
+#     ${CURRENT_DIR}/DBGameSets.h
+#     ${CURRENT_DIR}/DatabaseHelper.h
+#     ${CURRENT_DIR}/setcontainers.h
+#     ${CURRENT_DIR}/setobjects.h
+    PARENT_SCOPE
+)
+
+
+set(farm_SRCS ${farm_SRCS}
+    ${CURRENT_DIR}/DBGameSets.cpp
+    ${CURRENT_DIR}/DatabaseHelper.cpp
+    ${CURRENT_DIR}/setcontainers.cpp
+    ${CURRENT_DIR}/setobjects.cpp
     PARENT_SCOPE
 )

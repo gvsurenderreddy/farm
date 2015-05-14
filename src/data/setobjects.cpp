@@ -1,18 +1,20 @@
-/* 
+/*
  * File:   setobjects.cpp
  * Author: Roberto Benfatto
- * 
+ *
  * Created on 5 maggio 2015, 15.33
  */
 
 #include "setobjects.h"
 
-SItem::SItem() {
-    this->setName(nullptr);
-    this->setCrc(nullptr);
-    this->setMerge(nullptr);
-    this->setSha1(nullptr);
-    this->setStatus(status_t::STATUS_UNKNOWN);
+SItem::SItem()
+  : name(),
+    crc(),
+    merge(),
+    sha1(),
+    status(status_t::STATUS_UNKNOWN)
+{
+
 }
 
 SItem::SItem(QString name) : SItem() {
@@ -20,5 +22,9 @@ SItem::SItem(QString name) : SItem() {
 }
 
 SItem::~SItem() {
+}
+
+item_t SItem::getType() const {
+    return ITEM_OTHER;
 }
 

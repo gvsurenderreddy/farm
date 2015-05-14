@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   setobjects.h
  * Author: Roberto Benfatto
  *
@@ -6,7 +6,7 @@
  */
 
 #ifndef SETOBJECTS_H
-#define	SETOBJECTS_H
+#define SETOBJECTS_H
 #include <QtCore/QString>
 #include "datastruct.h"
 
