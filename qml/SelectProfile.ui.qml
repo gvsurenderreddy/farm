@@ -26,12 +26,12 @@ Rectangle {
         }
 
         RowLayout {
+            z: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 0
 
             ListView {
-                z: -1
                 id: profileListView
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -52,7 +52,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 150
 
-                color: "red"
+                //color: "red"
                 Column {
                     anchors.left: parent.left
                     anchors.leftMargin: 8
