@@ -10,6 +10,8 @@ Rectangle {
 
     ColumnLayout {
         anchors.fill: parent
+        spacing: 0
+
         Rectangle {
             id: banner
             height: 50
@@ -22,26 +24,52 @@ Rectangle {
                 font.pixelSize: 32
             }
         }
-        ListView {
-            z: -1
-            id: profileListView
+
+        RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 0
+
+            ListView {
+                z: -1
+                id: profileListView
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.minimumWidth: 100
 
 
-            model: profileList
-            highlight: Rectangle {
-                color: "lightsteelblue"
-                radius: 5
+                model: profileList
+                highlight: Rectangle {
+                    color: "lightsteelblue"
+                    //radius: 5
+                }
+                delegate: profileDelegate
+                focus: true
             }
-            delegate: profileDelegate
-            focus: true
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.preferredWidth: 150
+
+                color: "red"
+                Column {
+                    anchors.left: parent.left
+                    anchors.leftMargin: 8
+                    Text { text: '<b>' + profileListView.currentItem.profileData.name + '</b>' }
+                    Text { text: 'Mame version: <i>' + profileListView.currentItem.profileData.mameVersion + '</i>'}
+                    Text { text: 'Type: <i>' + profileListView.currentItem.profileData.dbType + '</i>' }
+                    Text { text: 'Roms: <i>' + profileListView.currentItem.profileData.romNumber + '</i>' }
+                    Text { text: 'Data path: <i>' + profileListView.currentItem.profileData.dataPath + '</i>' }
+                }
+            }
         }
     }
 
     Component {
         id: profileDelegate
         Item {
+            property variant profileData: model
             id: profileItem
             width: parent.width; height: child.height
             Column {
@@ -49,8 +77,9 @@ Rectangle {
                 anchors.leftMargin: 8
                 anchors.verticalCenter: parent.verticalCenter
                 id: child
-                Text { text: '<b>Name:</b> ' + name }
-                Text { text: '<b>Team:</b> ' + team }
+                Text { text: '<b>' + model.name + '</b>'}
+                Text { text: 'Mame version: <i>' + model.mameVersion + '</i>'}
+                Text { text: 'Type: <i>' + model.dbType + '</i>' }
             }
 
             MouseArea {
@@ -65,11 +94,11 @@ Rectangle {
     // fake temporary ListModel
     ListModel {
         id: profileList
-        ListElement { name: "Alice"; team: "Crypto" }
-        ListElement { name: "Bob"; team: "Crypto" }
-        ListElement { name: "Jane"; team: "QA" }
-        ListElement { name: "Victor"; team: "QA" }
-        ListElement { name: "Wendy"; team: "Graphics" }
+        ListElement { name: "Default"; dbType: "Dataset"; dataPath: "/var/lib/farm/data/"; romNumber: 55; mameVersion: "14.0"}
+        ListElement { name: "Ciccolo"; dbType: "Dataset"; dataPath: "/home/test/.farm/data/"; romNumber: 53; mameVersion: "14.0"}
+        ListElement { name: "Fillo's"; dbType: "OwnRoms"; dataPath: "/home/test/farm/data/"; romNumber: 34; mameVersion: "14.0"}
+        ListElement { name: "v13";     dbType: "Backup"; dataPath: "/var/lib/farm/data/"; romNumber: 20; mameVersion: "13.0"}
+        ListElement { name: "v13.2";   dbType: "Dataset"; dataPath: "/var/lib/farm/data/"; romNumber: 23; mameVersion: "13.2"}
     }
 
 }
