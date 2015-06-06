@@ -1,11 +1,11 @@
-/* 
+/*
  * File:   RomSet.cpp
  * Author: Roberto Benfatto
- * 
+ *
  * Created on 5 maggio 2015, 15.22
  */
 
-#include <qt/QtCore/qhash.h>
+#include <QtCore/QHash>
 #include "setcontainers.h"
 
 ItemCollection::ItemCollection(QString name, QString parent) {
