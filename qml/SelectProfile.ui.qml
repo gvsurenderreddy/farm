@@ -16,43 +16,50 @@ Rectangle {
             id: banner
             height: 50
             Layout.fillWidth: true
-            gradient: clubcolors
-            border {color: "#9EDDF2"; width: 2}
+            color: "lightsteelblue"
             Text {
                 anchors.centerIn: parent
                 text: "Profiles"
                 font.pixelSize: 32
             }
+            Rectangle {
+                // bottom border of the "banner" Rectangle
+                anchors.bottom: parent.bottom
+                height: 2
+                width: parent.width
+                color: "#A0B0C5"
+            }
         }
 
-        RowLayout {
+        SplitView {
             z: -1
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 0
 
-            ListView {
-                id: profileListView
-                Layout.fillWidth: true
+            ScrollView {
                 Layout.fillHeight: true
-                Layout.minimumWidth: 100
+                Layout.preferredWidth: 250
+                Layout.minimumWidth: 150
 
+                ListView {
+                    id: profileListView
 
-                model: profileList
-                highlight: Rectangle {
-                    color: "lightsteelblue"
-                    //radius: 5
+                    model: profileList
+                    highlight: Rectangle {
+                        color: "lightsteelblue"
+                        //radius: 5
+                    }
+                    delegate: profileDelegate
+                    focus: true
                 }
-                delegate: profileDelegate
-                focus: true
             }
 
             Rectangle {
-                Layout.fillWidth: true
+                // profile view
                 Layout.fillHeight: true
+                Layout.minimumWidth: 150
                 Layout.preferredWidth: 150
 
-                //color: "red"
                 Column {
                     anchors.left: parent.left
                     anchors.leftMargin: 8
@@ -61,6 +68,14 @@ Rectangle {
                     Text { text: 'Type: <i>' + profileListView.currentItem.profileData.dbType + '</i>' }
                     Text { text: 'Roms: <i>' + profileListView.currentItem.profileData.romNumber + '</i>' }
                     Text { text: 'Data path: <i>' + profileListView.currentItem.profileData.dataPath + '</i>' }
+                }
+
+                Button {
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    anchors.bottomMargin: 10
+                    anchors.rightMargin: 10
+                    text: qsTr("Select")
                 }
             }
         }
@@ -71,7 +86,7 @@ Rectangle {
         Item {
             property variant profileData: model
             id: profileItem
-            width: parent.width; height: child.height
+            width: parent.width; height: child.height+10
             Column {
                 anchors.left: parent.left
                 anchors.leftMargin: 8
