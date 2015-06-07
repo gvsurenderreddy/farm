@@ -3,5 +3,6 @@
     <qresource prefix="/">
         <file>qml/window.qml</file>
         <file>qml/SelectProfile.ui.qml</file>
+        <file>qml/UI.js</file>
     </qresource>
 </RCC>

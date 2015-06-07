@@ -1,6 +1,8 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
+import org.covolunablu.farm 1.0
+import "UI.js" as UI
 
 Rectangle {
     property string title
@@ -55,7 +57,7 @@ Rectangle {
             }
 
             Rectangle {
-                // profile view
+                // profile detailed view
                 Layout.fillHeight: true
                 Layout.minimumWidth: 150
                 Layout.preferredWidth: 150
@@ -71,11 +73,13 @@ Rectangle {
                 }
 
                 Button {
+                    enabled: !profileListView.currentItem.profileData.active
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
                     anchors.bottomMargin: 10
                     anchors.rightMargin: 10
                     text: qsTr("Select")
+                    onClicked: profileListView.currentItem.profileData.active = true;
                 }
             }
         }
@@ -92,7 +96,8 @@ Rectangle {
                 anchors.leftMargin: 8
                 anchors.verticalCenter: parent.verticalCenter
                 id: child
-                Text { text: '<b>' + model.name + '</b>'}
+                Text { text: '<b>' + model.name
+                        + (model.active ? " (" + qsTr("active") + ")" : "") + '</b>'}
                 Text { text: 'Mame version: <i>' + model.mameVersion + '</i>'}
                 Text { text: 'Type: <i>' + model.dbType + '</i>' }
             }
@@ -108,12 +113,12 @@ Rectangle {
 
     // fake temporary ListModel
     ListModel {
-        id: profileList
-        ListElement { name: "Default"; dbType: "Dataset"; dataPath: "/var/lib/farm/data/"; romNumber: 55; mameVersion: "14.0"}
-        ListElement { name: "Ciccolo"; dbType: "Dataset"; dataPath: "/home/test/.farm/data/"; romNumber: 53; mameVersion: "14.0"}
-        ListElement { name: "Fillo's"; dbType: "OwnRoms"; dataPath: "/home/test/farm/data/"; romNumber: 34; mameVersion: "14.0"}
-        ListElement { name: "v13";     dbType: "Backup"; dataPath: "/var/lib/farm/data/"; romNumber: 20; mameVersion: "13.0"}
-        ListElement { name: "v13.2";   dbType: "Dataset"; dataPath: "/var/lib/farm/data/"; romNumber: 23; mameVersion: "13.2"}
+        id: profileList2
+        ListElement { name: "Default"; dbType: "Dataset"; dataPath: "/var/lib/farm/data/";    romNumber: 55; mameVersion: "14.0"; active: false; }
+        ListElement { name: "Ciccolo"; dbType: "Dataset"; dataPath: "/home/test/.farm/data/"; romNumber: 53; mameVersion: "14.0"; active: false; }
+        ListElement { name: "Fillo's"; dbType: "OwnRoms"; dataPath: "/home/test/farm/data/";  romNumber: 34; mameVersion: "14.0"; active: false; }
+        ListElement { name: "v13";     dbType: "Backup";  dataPath: "/var/lib/farm/data/";    romNumber: 20; mameVersion: "13.0"; active: true;  }
+        ListElement { name: "v13.2";   dbType: "Dataset"; dataPath: "/var/lib/farm/data/";    romNumber: 23; mameVersion: "13.2"; active: false; }
     }
 
 }
