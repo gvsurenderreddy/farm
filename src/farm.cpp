@@ -1,12 +1,11 @@
 #include "farm.h"
 
 #include <QtCore/QDebug>
-#include <iostream>
-
 #include <QtQml/QQmlEngine>
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QQuickView>
+#include <iostream>
 
 
 Farm::Farm(int argc, char** argv)
@@ -45,8 +44,6 @@ void Farm::setup()
 //     QSurfaceFormat surfaceFormat = window->requestedFormat();
 //     window->setFormat(surfaceFormat);
 //     window->show();
-
-
     QStringList dataList;
     dataList.append("Item 1");
     dataList.append("Item 2");
@@ -55,5 +52,6 @@ void Farm::setup()
 
     QQmlContext* context = engine->rootContext();
     context->setContextProperty("myModel", QVariant::fromValue(dataList));
+
 }
 

@@ -8,9 +8,9 @@
 #include <QtCore/QHash>
 #include "setcontainers.h"
 
-ItemCollection::ItemCollection(QString name, QString parent) {
+ItemCollection::ItemCollection(QString name) {
     this->setName(name);
-    this->setParent(parent);
+    this->setParent("");
     this->setStatus(status_t::STATUS_UNKNOWN);
     this->itemlist = QHash<QString, SItem>();
 }
@@ -25,7 +25,7 @@ ItemCollection::~ItemCollection() {
  * If the item is present, this function returns false.
  */
 bool ItemCollection::addItem(SItem item) {
-    if(this->itemlist.find(item.getSha1()) == this->itemlist.end()) return false;
+    if(this->itemlist.find(item.getSha1()) != this->itemlist.end()) return false;
     this->itemlist.insert(item.getSha1(), item);
     return true;
 }
@@ -35,7 +35,7 @@ bool ItemCollection::addItem(SItem item) {
  * @return Returns true if the item was removed, else it will return false.
  */
 bool ItemCollection::delItem(QString item) {
-    if(this->itemlist.find(item) != this->itemlist.end()) return false;
+    if(this->itemlist.find(item) == this->itemlist.end()) return false;
     this->itemlist.remove(item);
     return true;
 }
@@ -57,3 +57,16 @@ bool ItemCollection::delItem(SItem item) {
 bool ItemCollection::hasItem(SItem item) {
     return this->itemlist.find(item.getSha1()) != this->itemlist.end();
 }
+/*
+bool Game::writeToDb(QSqlDatabase& db) const {
+    //This objects writes itself inside the db.
+}
+
+bool Mechanical::writeToDb(QSqlDatabase& db) const {
+
+}
+
+bool Bios::writeToDb(QSqlDatabase& db) const {
+
+}
+*/

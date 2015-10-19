@@ -26,7 +26,7 @@ public:
     //Abstract methods, defines the interface of SItem
     SItem();
     SItem(QString name);
-    SItem(SItem const&copy) {};
+    SItem(SItem const& copy);
     virtual item_t getType() const;
     virtual ~SItem();
 private:
@@ -40,6 +40,7 @@ private:
 class Sample: public SItem {
 public:
     Sample() : SItem() {};
+    Sample(SItem const& copy) : SItem(copy) {};
     Sample(Sample const& copy) : SItem(copy) {};
     Sample(QString name) : SItem(name) {};
     item_t getType() { return item_t::ITEM_SAMPLE; };
@@ -50,7 +51,8 @@ class Rom: public SItem {
 public:
     Rom() : SItem () {};
     Rom(QString name) : SItem(name) {};
-    Rom(Rom const& copy) : SItem(copy) {};
+    Rom(SItem const& copy) : SItem(copy) {};
+    Rom(Rom const& copy) : SItem(copy) { this->size = copy.size; };
     void setSize(int size) { this->size = size; };
     int getSize() { return size; };
     item_t getType() { return item_t::ITEM_ROM; };

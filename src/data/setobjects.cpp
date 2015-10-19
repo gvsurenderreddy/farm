@@ -21,6 +21,15 @@ SItem::SItem(QString name) : SItem() {
     this->setName(name);
 }
 
+SItem::SItem(SItem const& copy)
+{
+    this->crc = copy.crc;
+    this->merge = copy.merge;
+    this->name = copy.name;
+    this->sha1 = copy.sha1;
+    this->status = copy.status;
+}
+
 SItem::~SItem() {
 }
 
