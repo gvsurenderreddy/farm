@@ -29,7 +29,7 @@ void DBGameSets::onCreate(QSqlDatabase& db) {
         year varchar(255),\
         manufacturer varchar(255),\
         description varchar(255),\
-        is_bios int NOT NULL)\
+        type int NOT NULL)\
         ");
     this->query("\
         create table ROM (\
@@ -73,10 +73,10 @@ bool DBGameSets::addRom(QString gamename, Rom& rom) {
 
 bool DBGameSets::addSet(Game& game) {
     /*
-     * params=(setname, year, manufacturer, description, 1 if isbios else 0))
+     * params=(setname, year, manufacturer, description, rom type))
      */
     QSqlQuery qry = query("insert into romset values (?,?,?,?,?)",
-          { game.getName(), game.getYear(), game.getManufacturer(), game.getDescription(), game.getType() == TYPE_BIOS ? 1 : 0 }
+          { game.getName(), game.getYear(), game.getManufacturer(), game.getDescription(), game.getType() }
     );
     if (qry.lastError().type() != QSqlError::NoError) return false;
     auto itr = game.getItemIteratorBegin();

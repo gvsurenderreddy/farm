@@ -43,13 +43,17 @@ ItemCollection* Datparser::readObject()
     ItemCollection* icol;
     QString name = xmlstream.attributes().value("name").toString();
     QString parent = xmlstream.attributes().hasAttribute("parent") ? xmlstream.attributes().value("parent").toString() : "" ;
-    if( xmlstream.attributes().hasAttribute("isbios") )
+    if( xmlstream.attributes().value("isbios") == "yes" )
     {
         icol = new Bios(name);
     }
-    else if( xmlstream.attributes().hasAttribute("ismechanical") )
+    else if( xmlstream.attributes().value("ismechanical") == "yes" )
     {
         icol = new Mechanical(name);
+    }
+    else if( xmlstream.attributes().value("isdevice") == "yes")
+    {
+        icol = new Device(name);
     }
     else
     {

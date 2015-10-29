@@ -29,9 +29,9 @@ class ItemCollection {
         void setManufacturer(QString manufacturer) { this->manufacturer = manufacturer; }
         int getYear() const { return year; }
         void setYear(int year) { this->year = year; }
-        virtual set_t getType() {};
+        virtual set_t getType() = 0;
 //        virtual bool writeToDb(QSqlDatabase &db) const = 0;
-        virtual ~ItemCollection();
+        virtual ~ItemCollection() {};
         QHash<QString,SItem>::iterator getItemIteratorBegin() { return itemlist.begin(); };
         QHash<QString,SItem>::iterator getItemIteratorEnd() { return itemlist.end(); };
         bool addItem(SItem item);
@@ -49,29 +49,32 @@ class ItemCollection {
         status_t set_status;
 };
 
+class Device : public ItemCollection {
+    public:
+        Device(QString name) : ItemCollection(name) {};
+        set_t getType() { return TYPE_DEVICE; };
+};
+
 class Game : public ItemCollection {
     public:
         Game(QString name) : ItemCollection(name) {};
-        virtual set_t getType() { return set_t::TYPE_GAME; };
+        virtual set_t getType() { return TYPE_GAME; };
         //virtual bool writeToDb(QSqlDatabase& db) {};
-        virtual ~Game() {};
     
 };
 
 class Bios : public Game {
     public:
         Bios(QString name) : Game(name) {};
-        set_t getType() { return set_t::TYPE_BIOS; };
+        set_t getType() { return TYPE_BIOS; };
         //virtual bool writeToDb(QSqlDatabase& db) {};
-        virtual ~Bios() {};
 };
 
 class Mechanical : public ItemCollection {
     public:
         Mechanical(QString name) : ItemCollection(name) {};
-        virtual set_t getType() { return set_t::TYPE_MECHANICAL; };
+        virtual set_t getType() { return TYPE_MECHANICAL; };
         //virtual bool writeToDb(QSqlDatabase& db) {};
-        virtual ~Mechanical() {};
 };
 
 #endif	/* SETCONTAINERS_H */

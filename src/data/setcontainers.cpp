@@ -15,9 +15,6 @@ ItemCollection::ItemCollection(QString name) {
     this->itemlist = QHash<QString, SItem>();
 }
 
-ItemCollection::~ItemCollection() {
-}
-
 /**
  * Adds an item to this collection.
  * @param item The item we want to add inside this collection.
