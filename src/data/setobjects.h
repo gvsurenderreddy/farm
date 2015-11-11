@@ -26,9 +26,9 @@ public:
     //Abstract methods, defines the interface of SItem
     SItem();
     SItem(QString name);
-    SItem(SItem const& copy);
-    virtual item_t getType() const;
-    virtual ~SItem();
+//    SItem(SItem const& copy);
+    virtual item_t getType() = 0;
+    virtual ~SItem() {};
 private:
     QString name;
     QString sha1;
@@ -40,23 +40,21 @@ private:
 class Sample: public SItem {
 public:
     Sample() : SItem() {};
-    Sample(SItem const& copy) : SItem(copy) {};
-    Sample(Sample const& copy) : SItem(copy) {};
+/*    Sample(SItem const& copy) : SItem(copy) {};
+    Sample(Sample const& copy) : SItem(copy) {};*/
     Sample(QString name) : SItem(name) {};
     item_t getType() { return item_t::ITEM_SAMPLE; };
-    virtual ~Sample() {};
 };
 
 class Rom: public SItem {
 public:
     Rom() : SItem () {};
     Rom(QString name) : SItem(name) {};
-    Rom(SItem const& copy) : SItem(copy) {};
-    Rom(Rom const& copy) : SItem(copy) { this->size = copy.size; };
+/*    Rom(SItem const& copy) : SItem(copy) {};
+    Rom(Rom const& copy) : SItem(copy) { this->size = copy.size; };*/
     void setSize(int size) { this->size = size; };
     int getSize() { return size; };
     item_t getType() { return item_t::ITEM_ROM; };
-    virtual ~Rom() {};
 private:
     int size;
 };

@@ -5,9 +5,12 @@
  * Created on 6 maggio 2015, 14.29
  */
 
+#include <iostream>
 #include "DatabaseHelper.h"
 
 DatabaseHelper::DatabaseHelper(QString dbpath, unsigned int version,QString uniquename) {
+}
+void DatabaseHelper::init(QString dbpath, unsigned int version,QString uniquename) {
     if (version < 1) throw "Error: database version must be > 0.";
     this->version = version;
     this->initializing = false;
@@ -19,8 +22,8 @@ DatabaseHelper::DatabaseHelper(QString dbpath, unsigned int version,QString uniq
         onOpen(db);
         onConfig(db);
         int ver = getVersion();
-        if (ver == 0) this->onCreate(db);
-        else if (ver < version) this->onUpdate(db, ver, version);
+        if (ver == 0) onCreate(db);
+        else if (ver < version) onUpdate(db, ver, version);
         else if (ver > version) onDowngrade(db, ver, version);
         setVersion(version);
     } else {
@@ -28,18 +31,23 @@ DatabaseHelper::DatabaseHelper(QString dbpath, unsigned int version,QString uniq
     }
 }
 
-QSqlQuery DatabaseHelper::query(const QString str_query, std::list<QVariant> params) {
+QSqlQuery DatabaseHelper::query(const QString str_query, std::list<QVariantList> params, bool batch) {
     if (db.isOpen()) {
         db.transaction();
         QSqlQuery qry = QSqlQuery(db);
-        qry.prepare(str_query);
+        if(!qry.prepare(str_query)) {
+            std::cerr << "Query prep failed: " << str_query.toStdString() << std::endl;
+            return qry;
+        }
         if (!params.empty()) {
-            for (auto val : params) {
+            for (QVariantList val : params) {
                 qry.addBindValue(val);
             }
         }
-        qry.exec();
+        if(batch) qry.execBatch();
+        else qry.exec();
         qry.finish();
+
         if (qry.lastError().type() != QSqlError::NoError) {
             db.rollback();
             //Insert logging things here
@@ -61,7 +69,7 @@ void DatabaseHelper::close() {
 }
 
 int DatabaseHelper::getVersion() {
-    QSqlQuery qry = this->query("pragma user_version");
+    QSqlQuery qry = query("pragma user_version");
     if (qry.lastError().type() == QSqlError::NoError) {
         return qry.value(0).toInt();
     }
@@ -69,11 +77,13 @@ int DatabaseHelper::getVersion() {
 }
 
 void DatabaseHelper::setVersion(int version) {
-    QSqlQuery qry = this->query("pragma user_version=?", { version });
+    //QSqlQuery qry = query("pragma user_version = :ver", { version });
+    QSqlQuery qry = QSqlQuery("pragma user_version=" + QString::number(version), db);
     if (qry.lastError().type() == QSqlError::NoError) {
         this->version = version;
         return;
     }
+    std::cerr << qry.lastError().text().toStdString() << std::endl;
     throw "Error setting database version.";
 }
 

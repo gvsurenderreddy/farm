@@ -63,22 +63,18 @@ ItemCollection* Datparser::readObject()
     while(xmlstream.readNextStartElement())
     {
         QString secname = xmlstream.name().toString();
-        if( secname == "rom" )
-        { //code duplication, merge asap
-            SItem rom = Rom(xmlstream.attributes().value("name").toString());
-            rom.setCrc(xmlstream.attributes().value("crc").toString());
-            rom.setSha1(xmlstream.attributes().value("sha1").toString());
-            rom.setMerge(xmlstream.attributes().value("merge").toString());
-            ((Rom)rom).setSize(xmlstream.attributes().value("size").toInt());
-            icol->addItem(rom);
-        }
-        else if( secname == "sample" )
-        {
-            SItem sample = Sample(xmlstream.attributes().value("name").toString());
-            sample.setCrc(xmlstream.attributes().value("crc").toString());
-            sample.setSha1(xmlstream.attributes().value("sha1").toString());
-            sample.setMerge(xmlstream.attributes().value("merge").toString());
-            icol->addItem(sample);
+        SItem* itm;
+        if( secname == "rom" || secname == "sample") {
+            if( secname == "rom" ) {
+                itm = new Rom(xmlstream.attributes().value("name").toString());
+                reinterpret_cast<Rom*>(itm)->setSize(xmlstream.attributes().value("size").toString().toInt());
+            } else {
+                itm = new Sample(xmlstream.attributes().value("name").toString());
+            }
+            itm->setCrc(xmlstream.attributes().value("crc").toString());
+            itm->setSha1(xmlstream.attributes().value("sha1").toString());
+            itm->setMerge(xmlstream.attributes().value("merge").toString());
+            icol->addItem(itm);
         }
         else if( secname == "manufacturer" )
         {

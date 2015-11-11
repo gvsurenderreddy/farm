@@ -1,11 +1,14 @@
 #include <iostream>
 #include <src/utils/Datparser.h>
+#include <src/data/DBGameSets.h>
 #include "farm.h"
 
 int main(int argc, char** argv)
 {
     std::cout << *argv <<std::endl;
     Datparser dpars("/home/stengun/mame166.dat");
+    DBGameSets db("./test.db", 1);
+    db.init("./test.db", 1);
     QFile *datfile = new QFile("/home/stengun/mame166.dat");
     dpars.startRead(datfile);
     int bios=0,mech=0,oth=0;
@@ -41,6 +44,7 @@ int main(int argc, char** argv)
             default:
                 break;
         }
+        db.addSet(col);
     }
     std::cout << "PARSED sets " << mech << std::endl;
     std::cout << "PARSED BIOS " << bios << std::endl;

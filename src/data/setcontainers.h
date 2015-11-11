@@ -32,12 +32,12 @@ class ItemCollection {
         virtual set_t getType() = 0;
 //        virtual bool writeToDb(QSqlDatabase &db) const = 0;
         virtual ~ItemCollection() {};
-        QHash<QString,SItem>::iterator getItemIteratorBegin() { return itemlist.begin(); };
-        QHash<QString,SItem>::iterator getItemIteratorEnd() { return itemlist.end(); };
-        bool addItem(SItem item);
-        bool delItem(SItem item);
+        QHash<QString,SItem*>::iterator getItemIteratorBegin() { return itemlist.begin(); };
+        QHash<QString,SItem*>::iterator getItemIteratorEnd() { return itemlist.end(); };
+        bool addItem(SItem* item);
+        bool delItem(SItem* item);
         bool delItem(QString item);
-        bool hasItem(SItem item);
+        bool hasItem(SItem* item);
         int getItemQuantity() { return this->itemlist.size(); };
     private:
         QString name;
@@ -45,7 +45,7 @@ class ItemCollection {
         QString description;
         QString manufacturer;
         int year;
-        QHash<QString, SItem> itemlist;
+        QHash<QString, SItem*> itemlist;
         status_t set_status;
 };
 
