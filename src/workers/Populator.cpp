@@ -7,17 +7,15 @@
 #include "Populator.h"
 
 void Populator::run() {
-    parser->startRead();
+    if(parser == nullptr) return;
     emit started(parser->getTotalSets());
     int bios=0,mech=0,oth=0;
-    QFutureWatcher<void> futureDBWatcher;
-    QVector<std::list<ItemCollection*>> setvector;
     int count = 0;
     std::list<ItemCollection*> games;
     while(true) {
         ItemCollection *col = parser->readObject();
         if(col == nullptr) {
-            if(!games.empty()) setvector.append(games);
+            if(!games.empty()) db->addSets(games);
             break;
         }
         if(count < 1000) {
@@ -25,7 +23,7 @@ void Populator::run() {
             count++;
         } else {
             count = 0;
-            setvector.append(games);
+            db->addSets(games);
             games = std::list<ItemCollection*>();
         }
         switch(col->getType()) {
@@ -47,18 +45,24 @@ void Populator::run() {
     qInfo("PARSED sets: %d", mech);
     qInfo("PARSED BIOS only: %d", bios);
     qInfo("PARSED OTHER: %d", oth);
-    futureDBWatcher.setFuture(QtConcurrent::map(setvector, [=](std::list<ItemCollection*> itm ) { db->addSets(itm);}));
-    futureDBWatcher.waitForFinished();
 }
 
 void Populator::stop() {
     //Safe stop
 }
 
-Populator::Populator(QString datpath, QString dbpath) {
+void Populator::setDatPath(QString path) {
+    if(path.isEmpty()) return;
+    this->xmlpath = path;
+    delete this->parser;
+    this->parser = new Datparser(path);
+    this->dat_info = parser->startRead();
+}
+
+Populator::Populator(QString dbpath) {
     this->db = new DBGameSets(dbpath, 1);
     db->init(dbpath, 1);
-    this->parser = new Datparser(datpath);
+    this->parser = nullptr;
 }
 
 Populator::Populator() {

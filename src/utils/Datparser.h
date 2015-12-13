@@ -17,7 +17,7 @@ public:
     Datparser(QString path);
     ~Datparser();
     int getTotalSets();
-    void startRead();
+    std::list<QString> startRead();
     ItemCollection* readObject();
 private:
     QXmlStreamReader xmlstream;

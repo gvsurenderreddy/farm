@@ -12,16 +12,19 @@ Datparser::Datparser(QString path)
     this->totalsets=0;
 }
 
-void Datparser::startRead()
+std::list<QString> Datparser::startRead()
 {
+    std::list<QString> retval;
     if(datfile->open(QFile::ReadOnly))
     {
         xmlstream.setDevice(datfile);
         xmlstream.readNextStartElement();
         if( xmlstream.name() == "mame" ) {
-            qInfo("Reading mame");
-            qInfo() << "build:" << xmlstream.attributes().value("build").toString();
+            qInfo("Xml file reading");
+            qInfo() << "mame build:" << xmlstream.attributes().value("build").toString();
             qInfo() << "config:" << xmlstream.attributes().value("mameconfig").toString();
+            retval.push_back("Mame build: " + xmlstream.attributes().value("build").toString());
+            retval.push_back("Config version: " + xmlstream.attributes().value("mameconfig").toString());
         }
         else
         {
@@ -41,6 +44,8 @@ void Datparser::startRead()
     {
         qCritical("xml file error: %s", datfile->error());
     }
+    retval.push_back("Machines: " + QString::number(totalsets));
+    return retval;
 }
 
 ItemCollection* Datparser::readObject()

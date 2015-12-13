@@ -18,8 +18,7 @@
  */
 class Populator : public QObject {
     Q_OBJECT
-    QThread th_parser;
-    QThread th_db;
+
 signals:
     void progressChanged(int processed);
     void progressRangeChanged(int a, int b);
@@ -31,15 +30,17 @@ public slots:
     void stop(); // this actually kills the worker and its childrens
 
 public:
-    Populator(QString datpath, QString dbpath);
+    Populator(QString dbpath);
     Populator();
     ~Populator();
-    void setDatPath(QString path) { this->xmlpath = path; };
-    QString getDatPath() { return this->xmlpath; };
-    void setDbPath(QString path) { this->dbpath = path; }; // maybe I have to remove this
+    void setDatPath(QString path);
+    QString getDatPath() { return this->xmlpath; }
+    void setDbPath(QString path) { this->dbpath = path; } // maybe I have to remove this
     QString getDbPath() { return this->dbpath; }
+    std::list<QString> getDatInfo() { return this->dat_info; }
 private:
     QString xmlpath, dbpath;
+    std::list<QString> dat_info;
     Datparser* parser;
     DBGameSets* db;
     bool beginParse();
