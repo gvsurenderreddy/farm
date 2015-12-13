@@ -68,6 +68,43 @@ bool DBGameSets::addRom(QString setname, Rom* rom) {
     return qry.lastError().type() == QSqlError::NoError;
 }
 
+bool DBGameSets::addRoms(std::list<QVariantList> roms) {
+    QSqlQuery qry = query("insert into ROM values (?,?,?,?,?,?)",
+                          roms,
+                          true);
+    return qry.lastError().type() == QSqlError::NoError;
+}
+
+bool DBGameSets::addSets(std::list<QVariantList> sets) {
+    QSqlQuery qry = query("insert into romset values (?,?,?,?,?)",
+                          sets,
+                          true);
+    return qry.lastError().type() == QSqlError::NoError;
+}
+
+bool DBGameSets::addSets(std::list<ItemCollection*> games) {
+    QVariantList romname, romsetname, setname, setyear, setmanufacturer, setdesc, sha1, crc, size, baddump, settype;
+    for(ItemCollection* itm : games) {
+        setname << itm->getName();
+        setyear << itm->getYear();
+        setmanufacturer << itm->getManufacturer();
+        setdesc << itm->getDescription();
+        settype << itm->getType();
+        auto itr = itm->getItemIteratorBegin();
+        while (itr != itm->getItemIteratorEnd()) {
+            Rom* val = reinterpret_cast<Rom*>(itr.value());
+            romname << val->getName();
+            romsetname << itm->getName();
+            sha1 << val->getSha1();
+            crc << val->getCrc();
+            size << val->getSize();
+            baddump << (val->getStatus() == status_t::STATUS_BADDUMP ? 1 : 0);
+            ++itr;
+        }
+    }
+    return addSets({setname, setyear, setmanufacturer, setdesc, settype}) && addRoms({romname, romsetname, sha1, crc, size, baddump});
+}
+
 bool DBGameSets::addSet(ItemCollection* game) {
     /*
      * params=(setname, year, manufacturer, description, rom type))
@@ -87,8 +124,6 @@ bool DBGameSets::addSet(ItemCollection* game) {
         size << val->getSize();
         baddump << (val->getStatus() == status_t::STATUS_BADDUMP ? 1 : 0);
         ++itr;
-        //if (this->addRom(game->getName(), reinterpret_cast<Rom*>(itr.value()))) ++itr;
-        //else return false;
     }
     qry = query("insert into ROM values (?,?,?,?,?,?)", {romname, setname, sha1, crc, size, baddump}, true);
     return qry.lastError().type() == QSqlError::NoError;

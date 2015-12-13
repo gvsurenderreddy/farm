@@ -7,11 +7,13 @@
 
 #include <iostream>
 #include "DatabaseHelper.h"
+#include <QtDebug>
 
 DatabaseHelper::DatabaseHelper(QString dbpath, unsigned int version,QString uniquename) {
 }
 void DatabaseHelper::init(QString dbpath, unsigned int version,QString uniquename) {
-    if (version < 1) throw "Error: database version must be > 0.";
+    if (version < 1)
+        qCritical() << "Error: database version must be > 0.";
     this->version = version;
     this->initializing = false;
     this->name = dbpath;
@@ -27,16 +29,17 @@ void DatabaseHelper::init(QString dbpath, unsigned int version,QString uniquenam
         else if (ver > version) onDowngrade(db, ver, version);
         setVersion(version);
     } else {
-        throw "Error: cannot open database";
+        qCritical("Cannot open database.");
     }
 }
 
 QSqlQuery DatabaseHelper::query(const QString str_query, std::list<QVariantList> params, bool batch) {
     if (db.isOpen()) {
+        std::lock_guard<std::mutex> Guard(this->Mutex);
         db.transaction();
-        QSqlQuery qry = QSqlQuery(db);
+        QSqlQuery qry(db);
         if(!qry.prepare(str_query)) {
-            std::cerr << "Query prep failed: " << str_query.toStdString() << std::endl;
+            qCritical() << "Query prep failed: " << str_query;
             return qry;
         }
         if (!params.empty()) {
@@ -73,7 +76,7 @@ int DatabaseHelper::getVersion() {
     if (qry.lastError().type() == QSqlError::NoError) {
         return qry.value(0).toInt();
     }
-    throw "Error getting database version.";
+    qCritical() << "Error getting database version.";
 }
 
 void DatabaseHelper::setVersion(int version) {
@@ -83,8 +86,7 @@ void DatabaseHelper::setVersion(int version) {
         this->version = version;
         return;
     }
-    std::cerr << qry.lastError().text().toStdString() << std::endl;
-    throw "Error setting database version.";
+    qCritical() << "Error setting database version." << qry.lastError().text();
 }
 
 DatabaseHelper::~DatabaseHelper() {

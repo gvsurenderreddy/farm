@@ -4,40 +4,48 @@
 
 #include <iostream>
 #include "Datparser.h"
+#include <QtDebug>
 
 Datparser::Datparser(QString path)
 {
-    this->path = path;
+    this->datfile = new QFile(path);
+    this->totalsets=0;
 }
 
-void Datparser::startRead(QFile *datfile)
+void Datparser::startRead()
 {
     if(datfile->open(QFile::ReadOnly))
     {
         xmlstream.setDevice(datfile);
         xmlstream.readNextStartElement();
         if( xmlstream.name() == "mame" ) {
-            std::cout << "Reading mame" << std::endl
-                << "build " << xmlstream.attributes().value("build").toString().toStdString() << std::endl
-                << "config " << xmlstream.attributes().value("mameconfig").toString().toStdString() << std::endl;
+            qInfo("Reading mame");
+            qInfo() << "build:" << xmlstream.attributes().value("build").toString();
+            qInfo() << "config:" << xmlstream.attributes().value("mameconfig").toString();
         }
         else
         {
-            std::cerr << "This is not a valid mame datfile." << std::endl;
             xmlstream.device()->close();
-            throw QFile::FatalError;
+            qFatal("This is not a valid mame datfile.");
         }
-
+        while (!xmlstream.atEnd()) {
+            xmlstream.readNextStartElement();
+            totalsets++;
+            xmlstream.skipCurrentElement();
+        }
+        datfile->seek(0);
+        xmlstream.setDevice(datfile);
+        xmlstream.readNextStartElement();
     }
     else
     {
-        std::cerr << datfile->error() << std::endl;
-        throw QFile::OpenError;
+        qCritical("xml file error: %s", datfile->error());
     }
 }
 
 ItemCollection* Datparser::readObject()
 {
+    std::lock_guard<std::mutex> Guard(this->Mutex);
     if(!xmlstream.readNextStartElement()) return nullptr;
     Q_ASSERT(xmlstream.isStartElement() && xmlstream.name() == "machine");
     ItemCollection* icol;
@@ -100,3 +108,7 @@ Datparser::~Datparser()
 {
     this->xmlstream.clear();
 };
+
+int Datparser::getTotalSets() {
+    return this->totalsets;
+}

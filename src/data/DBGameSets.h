@@ -16,6 +16,7 @@ class DBGameSets : public DatabaseHelper {
 public:
     DBGameSets(const QString dbpath, unsigned int version);
     bool addRom(QString setname, Rom* rom);
+    bool addSets(std::list<ItemCollection*> games);
     bool addSet(ItemCollection* game);
     void init(QString dbpath, unsigned int version);
     virtual void onConfig(QSqlDatabase& db);
@@ -27,6 +28,8 @@ public:
     virtual ~DBGameSets();
 private:
     DBGameSets(const DBGameSets& orig) = delete;
+    bool addRoms(std::list<QVariantList> roms);
+    bool addSets(std::list<QVariantList> sets);
 };
 
 #endif	/* DBGAMESETS_H */

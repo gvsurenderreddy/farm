@@ -10,18 +10,20 @@
 #include <src/data/setobjects.h>
 #include <src/data/setcontainers.h>
 #include <QtCore/qfile.h>
+#include <mutex>
 
 class Datparser {
 public:
     Datparser(QString path);
     ~Datparser();
-    void startRead(QFile *datfile);
+    int getTotalSets();
+    void startRead();
     ItemCollection* readObject();
 private:
     QXmlStreamReader xmlstream;
-    QString path;
-    void readRoms(ItemCollection *icol);
-    void readSamples(Game *icol);
+    QFile* datfile;
+    int totalsets;
+    std::mutex Mutex;
 
 };
 
