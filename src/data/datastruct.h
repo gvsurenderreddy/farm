@@ -8,6 +8,14 @@
 #ifndef DATASTRUCT_H
 #define	DATASTRUCT_H
 
+enum chk_error_t {
+    WRONG_NAME,
+    WRONG_CHECKSUM,
+    WRONG_SIZE,
+    WRONG_CRC,
+    UNFIXABLE
+};
+
 enum status_t {
     STATUS_BADDUMP,
     STATUS_NODUMP,

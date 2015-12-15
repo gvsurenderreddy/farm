@@ -11,3 +11,6 @@
 # Cache files
 *.swp
 /.directory
+
+# other support files
+/rebuild_gui.sh

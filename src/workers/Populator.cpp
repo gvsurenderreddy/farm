@@ -1,7 +1,3 @@
-#include "Populator.h"//
-// Created by stengun on 11/11/15.
-//
-
 #include <iostream>
 #include <QtConcurrent/QtConcurrent>
 #include "Populator.h"
