@@ -1,12 +1,11 @@
 #include "farm.h"
 
 #include <QtCore/QDebug>
-#include <iostream>
-
 #include <QtQml/QQmlEngine>
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QQuickView>
+#include <iostream>
 
 #include <RomsetProfile.h>
 
@@ -44,7 +43,6 @@ void Farm::setup()
 
     QObject *topLevel = mainQmlView->create();
     window = qobject_cast<QQuickWindow*>(topLevel);
-
 
 //     QSurfaceFormat surfaceFormat = window->requestedFormat();
 //     window->setFormat(surfaceFormat);

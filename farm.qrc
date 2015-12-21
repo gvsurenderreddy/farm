@@ -1,8 +1,8 @@
 <RCC>
     <!-- QML files -->
     <qresource prefix="/">
-        <file>qml/window.qml</file>
-        <file>qml/SelectProfile.ui.qml</file>
-        <file>qml/UI.js</file>
+        <file alias="qml/window.qml">src/gui/qml/window.qml</file>
+        <file alias="qml/SelectProfile.ui.qml">src/gui/qml/SelectProfile.ui.qml</file>
+        <file alias="qml/UI.js">src/gui/qml/UI.js</file>
     </qresource>
 </RCC>

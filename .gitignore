@@ -3,9 +3,14 @@
 /nbproject
 /farm.kdev4
 /CMakeLists.txt.user
+/.idea
 
 # Build folders
 /build
 
 # Cache files
 *.swp
+/.directory
+
+# other support files
+/rebuild_gui.sh

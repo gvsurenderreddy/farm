@@ -31,20 +31,24 @@ find_package(Qt5Gui)
 find_package(Qt5Qml)
 find_package(Qt5Quick)
 find_package(Qt5Widgets)
+find_package(Qt5Concurrent)
+find_package(QuaZip5)
 # Add the include directories for the Qt5 modules to
 # the compile lines
-INCLUDE_DIRECTORIES(${Qt5Core_INCLUDE_DIRS} ${Qt5Sql_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Qml_INCLUDE_DIRS} ${Qt5Quick_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} src/data)
+INCLUDE_DIRECTORIES(${Qt5Core_INCLUDE_DIRS} ${Qt5Sql_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Qml_INCLUDE_DIRS} ${Qt5Quick_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5Concurrent_INCLUDE_DIRS} ${QUAZIP_INCLUDE_DIRS} src/data src/utils src/workers src/gui)
 
 # Use the compile definitions defined in the Qt5 modules
-add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Sql_DEFINITIONS} ${Qt5Gui_DEFINITIONS} ${Qt5Qml_DEFINITIONS} ${Qt5Quick_DEFINITIONS} ${Qt5Widgets_DEFINITIONS})
+add_definitions(${Qt5Core_DEFINITIONS} ${Qt5Sql_DEFINITIONS} ${Qt5Gui_DEFINITIONS} ${Qt5Qml_DEFINITIONS} ${Qt5Quick_DEFINITIONS} ${Qt5Widgets_DEFINITIONS} ${Qt5Concurrent_DEFINITIONS})
 
 # Add compiler flags for bulding executables (-fPIE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Gui_EXECUTABLE_COMPILE_FLAGS} ${Qt5Qml_EXECUTABLE_COMPILE_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Gui_EXECUTABLE_COMPILE_FLAGS} ${Qt5Qml_EXECUTABLE_COMPILE_FLAGS} ${Qt5Quick_EXECUTABLE_COMPILE_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Concurrent_EXECUTABLE_COMPILE_FLAGS} ")
 
-set(farm_SRCS src/farm.cpp src/main.cpp )
-set(farm_QT_HEADERS src/farm.h )
+set(farm_SRCS src/main.cpp)
 set(farm_QRC farm.qrc)
 add_subdirectory(src/data)
+add_subdirectory(src/workers)
+add_subdirectory(src/utils)
+add_subdirectory(src/gui)
 
 QT5_ADD_RESOURCES(farm_RCC_SRCS ${farm_QRC})
 
@@ -58,6 +62,6 @@ foreach(farm_QT_HEADER ${farm_QT_HEADERS})
 endforeach()
 
 add_executable(farm ${farm_SRCS} ${farm_MOCS} ${farm_RCC_SRCS})
-target_link_libraries(farm ${Qt5Sql_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Qml_LIBRARIES} ${Qt5Quick_LIBRARIES} ${Qt5Widgets_LIBRARIES})
+target_link_libraries(farm ${Qt5Sql_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Qml_LIBRARIES} ${Qt5Quick_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5Concurrent_LIBRARIES} ${QUAZIP_LIBRARIES})
 
 install(TARGETS farm RUNTIME DESTINATION bin)

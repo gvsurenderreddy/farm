@@ -5,11 +5,13 @@
  * Created on 12 maggio 2015, 22.18
  */
 
+#include <iostream>
 #include "DBGameSets.h"
-#include "setobjects.h"
-#include "setcontainers.h"
-#include <QtSql/QSqlError>
-DBGameSets::DBGameSets(const QString dbpath, unsigned int version) : DatabaseHelper(dbpath, version, dbname) {
+DBGameSets::DBGameSets(const QString dbpath, unsigned int version) : DatabaseHelper(dbpath, version, DBNAME) {
+}
+
+void DBGameSets::init(QString dbpath, unsigned int version) {
+    DatabaseHelper::init(dbpath, version, DBNAME);
 }
 
 void DBGameSets::onConfig(QSqlDatabase& db) {
@@ -24,31 +26,28 @@ void DBGameSets::onConfig(QSqlDatabase& db) {
 void DBGameSets::onCreate(QSqlDatabase& db) {
     initializing = true;
     this->query("\
-        create table ROMSET (\
-        setname varchar(255) NOT NULL PRIMARY KEY,\
-        year varchar(255),\
-        manufacturer varchar(255),\
-        description varchar(255),\
-        is_bios int NOT NULL)\
-        ");
+create table ROMSET ( \
+setname varchar(255) NOT NULL PRIMARY KEY, \
+year varchar(255), \
+manufacturer varchar(255), \
+description varchar(255), \
+type int NOT NULL)");
     this->query("\
-        create table ROM (\
-        romname varchar(255) NOT NULL,\
-        setname varchar(255) NOT NULL REFERENCES ROMSET(setname),\
-        hash varchar(255),\
-        crc varchar(255),\
-        size int,\
-        is_baddump int not null,\
-        primary key (romname, setname)\
-        )\
-        ");
+create table ROM ( \
+romname varchar(255) NOT NULL, \
+setname varchar(255) NOT NULL REFERENCES ROMSET(setname), \
+hash varchar(255), \
+crc varchar(255), \
+size int, \
+is_baddump int not null, \
+primary key (romname, setname) \
+)");
     this->query("\
-        create table share (\
-        parent varchar(255) not null references ROMSET(setname),\
-        child varchar(255) not null references ROMSET(setname),\
-        primary key (parent, child)\
-        )\
-        ");
+create table share ( \
+parent varchar(255) not null references ROMSET(setname), \
+child varchar(255) not null references ROMSET(setname), \
+primary key (parent, child) \
+)");
     initializing = false;
 }
 
@@ -58,33 +57,76 @@ void DBGameSets::onUpdate(QSqlDatabase& db, int oldver, int newver) {
     initializing = false;
 }
 
-bool DBGameSets::addRom(QString gamename, Rom& rom) {
-    /*
+bool DBGameSets::addRom(QString setname, Rom* rom) {
+    /**
      * params=(romname, setname, romhash, romcrc, size, 1 if is_baddump else 0)
      */
-    int baddump = rom.getStatus() == status_t::STATUS_BADDUMP ? 1 : 0;
-    QSqlQuery qry = this->query("\
-                                insert into ROM values (?,?,?,?,?,?)\
-                                ",
-                                { rom.getName(), gamename, rom.getSha1(), rom.getCrc(), rom.getSize(), baddump }
-    );
+    int baddump = rom->getStatus() == status_t::STATUS_BADDUMP ? 1 : 0;
+    QSqlQuery qry = query("insert into ROM values (?,?,?,?,?,?)",
+                          {{rom->getName()}, {setname}, {rom->getSha1()}, {rom->getCrc()}, {rom->getSize()}, {baddump} },
+        true);
     return qry.lastError().type() == QSqlError::NoError;
 }
 
-bool DBGameSets::addSet(Game& game) {
+bool DBGameSets::addRoms(std::list<QVariantList> roms) {
+    QSqlQuery qry = query("insert into ROM values (?,?,?,?,?,?)",
+                          roms,
+                          true);
+    return qry.lastError().type() == QSqlError::NoError;
+}
+
+bool DBGameSets::addSets(std::list<QVariantList> sets) {
+    QSqlQuery qry = query("insert into romset values (?,?,?,?,?)",
+                          sets,
+                          true);
+    return qry.lastError().type() == QSqlError::NoError;
+}
+
+bool DBGameSets::addSets(std::list<ItemCollection*> games) {
+    QVariantList romname, romsetname, setname, setyear, setmanufacturer, setdesc, sha1, crc, size, baddump, settype;
+    for(ItemCollection* itm : games) {
+        setname << itm->getName();
+        setyear << itm->getYear();
+        setmanufacturer << itm->getManufacturer();
+        setdesc << itm->getDescription();
+        settype << itm->getType();
+        auto itr = itm->getItemIteratorBegin();
+        while (itr != itm->getItemIteratorEnd()) {
+            Rom* val = reinterpret_cast<Rom*>(itr.value());
+            romname << val->getName();
+            romsetname << itm->getName();
+            sha1 << val->getSha1();
+            crc << val->getCrc();
+            size << val->getSize();
+            baddump << (val->getStatus() == status_t::STATUS_BADDUMP ? 1 : 0);
+            ++itr;
+        }
+    }
+    return addSets({setname, setyear, setmanufacturer, setdesc, settype}) && addRoms({romname, romsetname, sha1, crc, size, baddump});
+}
+
+bool DBGameSets::addSet(ItemCollection* game) {
     /*
-     * params=(setname, year, manufacturer, description, 1 if isbios else 0))
+     * params=(setname, year, manufacturer, description, rom type))
      */
     QSqlQuery qry = query("insert into romset values (?,?,?,?,?)",
-          { game.getName(), game.getYear(), game.getManufacturer(), game.getDescription(), game.getType() == TYPE_BIOS ? 1 : 0 }
-    );
+          { {game->getName()}, {game->getYear()}, {game->getManufacturer()}, {game->getDescription()}, {game->getType()} },
+        true);
     if (qry.lastError().type() != QSqlError::NoError) return false;
-    auto itr = game.getItemIteratorBegin();
-    while (itr != game.getItemIteratorEnd()) {
-        if (this->addRom(game.getName(), (Rom&)*itr)) ++itr;
-        else return false;
+    QVariantList romname, crc, sha1, setname, size, baddump;
+    auto itr = game->getItemIteratorBegin();
+    while (itr != game->getItemIteratorEnd()) {
+        Rom* val = reinterpret_cast<Rom*>(itr.value());
+        romname << val->getName();
+        setname << game->getName();
+        sha1 << val->getSha1();
+        crc << val->getCrc();
+        size << val->getSize();
+        baddump << (val->getStatus() == status_t::STATUS_BADDUMP ? 1 : 0);
+        ++itr;
     }
-    return true;
+    qry = query("insert into ROM values (?,?,?,?,?,?)", {romname, setname, sha1, crc, size, baddump}, true);
+    return qry.lastError().type() == QSqlError::NoError;
 }
 
 

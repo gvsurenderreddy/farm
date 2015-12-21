@@ -8,6 +8,14 @@
 #ifndef DATASTRUCT_H
 #define	DATASTRUCT_H
 
+enum chk_error_t {
+    WRONG_NAME,
+    WRONG_CHECKSUM,
+    WRONG_SIZE,
+    WRONG_CRC,
+    UNFIXABLE
+};
+
 enum status_t {
     STATUS_BADDUMP,
     STATUS_NODUMP,
@@ -23,10 +31,11 @@ enum item_t {
 };
 
 enum set_t {
-    TYPE_BIOS,
-    TYPE_GAME,
-    TYPE_MECHANICAL,
-    TYPE_OTHER
+    TYPE_BIOS=0,
+    TYPE_GAME=1,
+    TYPE_MECHANICAL=2,
+    TYPE_DEVICE=3,
+    TYPE_OTHER=4
 };
 
 #endif	/* DATASTRUCT_H */

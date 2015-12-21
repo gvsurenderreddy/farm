@@ -18,15 +18,16 @@ class DatabaseHelper {
 protected:
     bool initializing;
     QSqlDatabase db;
-    virtual void onUpdate(QSqlDatabase& db, int oldver, int newver) {};
-    virtual void onCreate(QSqlDatabase& db) {};
-    virtual void onOpen(QSqlDatabase& db) {};
-    virtual void onConfig(QSqlDatabase& db) {};
-    virtual void onDowngrade(QSqlDatabase& db, int oldver, int newver) {};
+    void init(QString dbpath, unsigned int version,QString uniquename);
+    virtual void onUpdate(QSqlDatabase& db, int oldver, int newver) = 0;
+    virtual void onCreate(QSqlDatabase& db) = 0;
+    virtual void onOpen(QSqlDatabase& db) = 0;
+    virtual void onConfig(QSqlDatabase& db) = 0;
+    virtual void onDowngrade(QSqlDatabase& db, int oldver, int newver) = 0;
 public:
     DatabaseHelper(QString dbpath, unsigned int version,QString uniquename);
     QString getDatabaseName() { return this->name; };
-    QSqlQuery query(const QString str_query, std::list<QVariant> params={});
+    QSqlQuery query(const QString str_query, std::list<QVariantList> params={}, bool batch=false);
     void close();
     virtual ~DatabaseHelper();
 private:

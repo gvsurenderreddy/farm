@@ -20,11 +20,13 @@ SItem::SItem()
 SItem::SItem(QString name) : SItem() {
     this->setName(name);
 }
-
-SItem::~SItem() {
-}
-
-item_t SItem::getType() const {
-    return ITEM_OTHER;
-}
+/*
+SItem::SItem(SItem const& copy)
+{
+    this->crc = QString(copy.crc);
+    this->merge = QString(copy.merge);
+    this->name = QString(copy.name);
+    this->sha1 = QString(copy.sha1);
+    this->status = copy.status;
+}*/
 
